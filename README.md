@@ -10,3 +10,5 @@ These are the raw asset files used inside of the fastfiles for Plutonium.
 * Ziomix
 * Gencrack
 * Hadi77KSA
+* Jbleezy
+* Scullyy
