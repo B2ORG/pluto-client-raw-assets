@@ -137,52 +137,31 @@ LANG_ENGLISH        "Drag up / down"
 
 // SERVERBROWSERFILTERSPOPUP
 
-REFERENCE           MENU_SERVER_BROWSER_CURRENT
-LANG_ENGLISH        "Current: &&1"
-
-REFERENCE           MENU_SERVER_BROWSER_FILTER
-LANG_ENGLISH        "Enter a filter"
-
-REFERENCE           MENU_SERVER_BROWSER_SEARCH_FILTER_CAPS
-LANG_ENGLISH        "SEARCH FILTER"
-
 REFERENCE           MENU_SERVER_BROWSER_SEARCH_FILTER_HINT
 LANG_ENGLISH        "Enter text to filter the server list by."
 
-REFERENCE           MENU_SERVER_BROWSER_DISPLAY_EMPTY_CAPS
-LANG_ENGLISH        "DISPLAY EMPTY SERVERS"
-
 REFERENCE           MENU_SERVER_BROWSER_DISPLAY_EMPTY_HINT
 LANG_ENGLISH        "Show empty servers on the server list."
+
+REFERENCE           MENU_SERVER_BROWSER_DISPLAY_FULL_HINT
+LANG_ENGLISH        "Show full servers on the server list."
+
+REFERENCE           MENU_SERVER_BROWSER_PASSWORD_PROTECTED_HINT
+LANG_ENGLISH        "Show password protected servers on the server list."
+
+REFERENCE           MENU_SERVER_BROWSER_MAX_PING_HINT
+LANG_ENGLISH        "Max ping of servers on the server list."
+
+REFERENCE           MENU_SERVER_BROWSER_AIM_ASSIST_HINT
+LANG_ENGLISH        "Show aim assist servers on the server list."
 
 // SERVERBROWSERSERVERINFO
 
 REFERENCE           SERVERBROWSER_NO_SERVER_SELECTED
 LANG_ENGLISH        "No server selected"
 
-REFERENCE           SERVERBROWSER_CONNECT_TO_SERVER_CAPS
-LANG_ENGLISH        "CONNECT TO SERVER"
-
 REFERENCE           SERVERBROWSER_CONNECT_TO_SERVER_HINT
 LANG_ENGLISH        "Connect to the server."
-
-REFERENCE           SERVERBROWSER_HOSTNAME
-LANG_ENGLISH        "HOSTNAME: &&1"
-
-REFERENCE           SERVERBROWSER_MAX_PLAYERS
-LANG_ENGLISH        "MAX PLAYERS: &&1"
-
-REFERENCE           SERVERBROWSER_MAP_NAME
-LANG_ENGLISH        "MAP NAME: &&1"
-
-REFERENCE           SERVERBROWSER_GAMETYPE
-LANG_ENGLISH        "GAMETYPE: &&1"
-
-REFERENCE           SERVERBROWSER_PING
-LANG_ENGLISH        "PING: &&1"
-
-REFERENCE           SERVERBROWSER_PLAYERS
-LANG_ENGLISH        "PLAYERS: &&1"
 
 // LOADING
 
@@ -190,9 +169,6 @@ REFERENCE           MPTIP_PLUTONIUM
 LANG_ENGLISH        "Without the hard work of all of the Plutonium developers the games we love would have died off long ago."
 
 // PRIVATEGAMELOBBY
-
-REFERENCE           SERVER_CONNECT
-LANG_ENGLISH        "Connect to the server."
 
 REFERENCE           MENU_TARGET_ASSIST_HINT
 LANG_ENGLISH        "Allow aim assist option for all controller players."

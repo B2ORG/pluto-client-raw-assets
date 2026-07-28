@@ -137,52 +137,31 @@ LANG_ENGLISH        "Сдвиньте вверх / вниз"
 
 // SERVERBROWSERFILTERSPOPUP
 
-REFERENCE           MENU_SERVER_BROWSER_CURRENT
-LANG_ENGLISH        "Текущий: &&1"
-
-REFERENCE           MENU_SERVER_BROWSER_FILTER
-LANG_ENGLISH        "Введите фильтр"
-
-REFERENCE           MENU_SERVER_BROWSER_SEARCH_FILTER_CAPS
-LANG_ENGLISH        "ФИЛЬТР ПОИСКА"
-
 REFERENCE           MENU_SERVER_BROWSER_SEARCH_FILTER_HINT
 LANG_ENGLISH        "Введите текст для фильтрации списка серверов."
 
-REFERENCE           MENU_SERVER_BROWSER_DISPLAY_EMPTY_CAPS
-LANG_ENGLISH        "ПОКАЗЫВАТЬ ПУСТЫЕ СЕРВЕРЫ"
-
 REFERENCE           MENU_SERVER_BROWSER_DISPLAY_EMPTY_HINT
 LANG_ENGLISH        "Показывать пустые серверы в списке серверов."
+
+REFERENCE           MENU_SERVER_BROWSER_DISPLAY_FULL_HINT
+LANG_ENGLISH        ""
+
+REFERENCE           MENU_SERVER_BROWSER_PASSWORD_PROTECTED_HINT
+LANG_ENGLISH        ""
+
+REFERENCE           MENU_SERVER_BROWSER_MAX_PING_HINT
+LANG_ENGLISH        ""
+
+REFERENCE           MENU_SERVER_BROWSER_AIM_ASSIST_HINT
+LANG_ENGLISH        ""
 
 // SERVERBROWSERSERVERINFO
 
 REFERENCE           SERVERBROWSER_NO_SERVER_SELECTED
 LANG_ENGLISH        "Сервер не выбран"
 
-REFERENCE           SERVERBROWSER_CONNECT_TO_SERVER_CAPS
-LANG_ENGLISH        "ПОДКЛЮЧИТЬСЯ К СЕРВЕРУ"
-
 REFERENCE           SERVERBROWSER_CONNECT_TO_SERVER_HINT
 LANG_ENGLISH        "Подключиться к серверу."
-
-REFERENCE           SERVERBROWSER_HOSTNAME
-LANG_ENGLISH        "ИМЯ СЕРВЕРА: &&1"
-
-REFERENCE           SERVERBROWSER_MAX_PLAYERS
-LANG_ENGLISH        "МАКС. ИГРОКОВ: &&1"
-
-REFERENCE           SERVERBROWSER_MAP_NAME
-LANG_ENGLISH        "НАЗВАНИЕ КАРТЫ: &&1"
-
-REFERENCE           SERVERBROWSER_GAMETYPE
-LANG_ENGLISH        "РЕЖИМ ИГРЫ: &&1"
-
-REFERENCE           SERVERBROWSER_PING
-LANG_ENGLISH        "ПИНГ: &&1"
-
-REFERENCE           SERVERBROWSER_PLAYERS
-LANG_ENGLISH        "ИГРОКИ: &&1"
 
 // LOADING
 
@@ -190,9 +169,6 @@ REFERENCE           MPTIP_PLUTONIUM
 LANG_ENGLISH        "Без упорного труда разработчиков Plutonium, эти игры которые мы так любим давно бы исчезли."
 
 // PRIVATEGAMELOBBY
-
-REFERENCE           SERVER_CONNECT
-LANG_ENGLISH        "Подключиться к серверу."
 
 REFERENCE           MENU_TARGET_ASSIST_HINT
 LANG_ENGLISH        "Разрешить помощь в прицеливании для всех игроков с контроллером."
