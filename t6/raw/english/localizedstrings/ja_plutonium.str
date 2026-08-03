@@ -144,16 +144,37 @@ REFERENCE           MENU_SERVER_BROWSER_DISPLAY_EMPTY_HINT
 LANG_ENGLISH        "サーバーリストに空のサーバーを表示します。"
 
 REFERENCE           MENU_SERVER_BROWSER_DISPLAY_FULL_HINT
-LANG_ENGLISH        ""
+LANG_ENGLISH       "サーバーリストにフルサーバーを表示します。"
 
 REFERENCE           MENU_SERVER_BROWSER_PASSWORD_PROTECTED_HINT
-LANG_ENGLISH        ""
+LANG_ENGLISH       "サーバーリストにパスワードで保護されたサーバーを表示します。"
 
 REFERENCE           MENU_SERVER_BROWSER_MAX_PING_HINT
-LANG_ENGLISH        ""
+LANG_ENGLISH       "サーバーリストに表示するサーバーの最大Ping値。"
 
 REFERENCE           MENU_SERVER_BROWSER_AIM_ASSIST_HINT
-LANG_ENGLISH        ""
+LANG_ENGLISH       "サーバーリストにエイムアシストサーバーを表示します。"
+
+REFERENCE           SERVERBROWSER_HIDEBRAINROT_MP
+LANG_ENGLISH       "スナイパーサーバーを非表示"
+
+REFERENCE           SERVERBROWSER_HIDEBRAINROT_HINT_MP
+LANG_ENGLISH       "サーバーリストでトリックショットやスナイパーサーバーを非表示にします。"
+
+REFERENCE           SERVERBROWSER_HIDEBRAINROT_ZM
+LANG_ENGLISH       "バンクサーバーを非表示"
+
+REFERENCE           SERVERBROWSER_HIDEBRAINROT_HINT_ZM
+LANG_ENGLISH       "サーバーリストでバンクを宣伝しているサーバーを非表示にします。"
+
+REFERENCE           SERVERBROWSER_HARDCORE_HINT
+LANG_ENGLISH       "サーバーリストにハードコアサーバーを表示します。"
+
+REFERENCE           SERVERBROWSER_GAMETYPE_HINT
+LANG_ENGLISH       "サーバーリストで特定のゲームタイプをプレイしているサーバーを表示します。"
+
+REFERENCE           SERVERBROWSER_MAP_HINT
+LANG_ENGLISH        "サーバーリストに、そのサーバーが特定のマップをプレイしていることを表示します。"
 
 // SERVERBROWSERSERVERINFO
 
