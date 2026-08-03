@@ -12,3 +12,4 @@ These are the raw asset files used inside of the fastfiles for Plutonium.
 * Hadi77KSA
 * Jbleezy
 * Scullyy
+* EvelynYuki
