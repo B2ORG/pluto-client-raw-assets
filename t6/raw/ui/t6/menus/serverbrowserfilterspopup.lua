@@ -3,7 +3,7 @@ CoD.ServerBrowserFilters = {}
 CoD.ServerBrowserFilters.Back = function (self, event)
 	event.servers = {}
 	CoD.ServerList.ServerListRefresh(CoD.ServerList.ServerList, event)
-	
+
 	self:saveState()
 	self:goBack(event.controller)
 end
@@ -68,72 +68,94 @@ LUI.createMenu.ServerBrowserFilters = function ( owner )
 	self.passwordProtectedButton = self.buttonList:addDvarLeftRightSelector( owner, UIExpression.ToUpper(0, Engine.Localize("EXE_SV_INFO_PASSWORD")), "ui_serverbrowser_searchfilter_passwordprotected", Engine.Localize("MENU_SERVER_BROWSER_PASSWORD_PROTECTED_HINT") )
 	CoD.GameOptions.Button_AddChoices( owner, self.passwordProtectedButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
 
-	self.aimAssistButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("MENU_AIM_ASSIST_CAPS"), "ui_serverbrowser_searchfilter_aimassist", Engine.Localize("MENU_SERVER_BROWSER_AIM_ASSIST_HINT") )
-	CoD.GameOptions.Button_AddChoices( owner, self.aimAssistButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
-
-	if CoD.isZombie then
-		self.brainRotButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("SERVERBROWSER_HIDEBRAINROT_ZM"), "ui_serverbrowser_searchfilter_hidebrainrot", Engine.Localize("SERVERBROWSER_HIDEBRAINROT_HINT_ZM") )
-	else
-		self.brainRotButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("SERVERBROWSER_HIDEBRAINROT_MP"), "ui_serverbrowser_searchfilter_hidebrainrot", Engine.Localize("SERVERBROWSER_HIDEBRAINROT_HINT_MP") )
-	end
-	CoD.GameOptions.Button_AddChoices( owner, self.brainRotButton, { "MENU_NO_CAPS", "MENU_YES_CAPS" }, { 0, 1 } )
-
 	if not CoD.isZombie then
 		self.hardcoreButton = self.buttonList:addDvarLeftRightSelector( owner, UIExpression.ToUpper(0, Engine.Localize("MENU_RULES_HARDCORE")), "ui_serverbrowser_searchfilter_hardcore", Engine.Localize("SERVERBROWSER_HARDCORE_HINT") )
 		CoD.GameOptions.Button_AddChoices( owner, self.hardcoreButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
 	end
 
-	local gametypesDisplays = {"CUSTOM_ALL"}
-	local gametypesValues = {""}
+	self.aimAssistButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("MENU_AIM_ASSIST_CAPS"), "ui_serverbrowser_searchfilter_aimassist", Engine.Localize("MENU_SERVER_BROWSER_AIM_ASSIST_HINT") )
+	CoD.GameOptions.Button_AddChoices( owner, self.aimAssistButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
 
-	local row = 0
-	while true do
-		local val = UIExpression.TableLookupGetColumnValueForRow(0, CoD.gametypesTable, row, 0)
-
-		if val == "" then
-			break
-		end
-
-		if val == "0" then
-			local gametype = UIExpression.TableLookupGetColumnValueForRow(0, CoD.gametypesTable, row, 1)
-			local gametype_ref = UIExpression.TableLookupGetColumnValueForRow(0, CoD.gametypesTable, row, 2)
-
-			gametypesDisplays[#gametypesDisplays + 1] = gametype_ref
-			gametypesValues[#gametypesValues + 1] = gametype
-		end
-
-		row = row + 1
-	end
-
-	self.gametypeButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("MENU_GAME_MODE_CAPS"), "ui_serverbrowser_searchfilter_gamemode", Engine.Localize("SERVERBROWSER_GAMETYPE_HINT") )
-	CoD.GameOptions.Button_AddChoices( owner, self.gametypeButton, gametypesDisplays, gametypesValues )
+	local hideBrainrotStr = CoD.MPZM(Engine.Localize("SERVERBROWSER_HIDEBRAINROT_MP"), Engine.Localize("SERVERBROWSER_HIDEBRAINROT_ZM"))
+	local hideBrainrotHintStr = CoD.MPZM(Engine.Localize("SERVERBROWSER_HIDEBRAINROT_HINT_MP"), Engine.Localize("SERVERBROWSER_HIDEBRAINROT_HINT_ZM"))
+	self.brainRotButton = self.buttonList:addDvarLeftRightSelector( owner, hideBrainrotStr, "ui_serverbrowser_searchfilter_hidebrainrot", hideBrainrotHintStr )
+	CoD.GameOptions.Button_AddChoices( owner, self.brainRotButton, { "MENU_NO_CAPS", "MENU_YES_CAPS" }, { 0, 1 } )
 
 	local mapsDisplays = {"CUSTOM_ALL"}
 	local mapsValues = {""}
 
-	local rowForNum = 0
+	local mapsRow = 0
 	while true do
-		local valForNum = UIExpression.TableLookupGetColumnValueForRow(0, CoD.mapsTable, rowForNum, 0)
+		local mapsColVal = UIExpression.TableLookupGetColumnValueForRow(0, CoD.mapsTable, mapsRow, 0)
 
-		if valForNum == "" then
+		if mapsColVal == "" then
 			break
 		end
 
-		if valForNum == "maxnum_map" then
-			local numMaps = tonumber(UIExpression.TableLookupGetColumnValueForRow(nil, CoD.mapsTable, rowForNum, 1))
+		if mapsColVal == "maxnum_map" then
+			local numMaps = tonumber(UIExpression.TableLookupGetColumnValueForRow(nil, CoD.mapsTable, mapsRow, 1))
 
 			for i = 1, numMaps, 1 do
-				mapsDisplays[#mapsDisplays + 1] = UIExpression.TableLookupGetColumnValueForRow(nil, CoD.mapsTable, rowForNum + i, 3)
-				mapsValues[#mapsValues + 1] = UIExpression.TableLookupGetColumnValueForRow(nil, CoD.mapsTable, rowForNum + i, 0)
+				local map = UIExpression.TableLookupGetColumnValueForRow(nil, CoD.mapsTable, mapsRow + i, 0)
+				local mapRef = UIExpression.TableLookupGetColumnValueForRow(nil, CoD.mapsTable, mapsRow + i, 3)
+
+				if CoD.isZombie then
+					mapRef = UIExpression.TableLookup(nil, CoD.gametypesTable, 0, 0, 1, "zclassic", 7)
+
+					if map ~= "zm_transit" then
+						mapRef = UIExpression.ToUpper(nil, mapRef .. "_" .. map)
+					end
+
+					if string.find(Engine.Localize(mapRef), mapRef) then
+						mapRef = UIExpression.TableLookup(nil, CoD.gametypesTable, 0, 5, 2, map, 16)
+					end
+				end
+
+				mapRef = mapRef .. "_CAPS"
+
+				if map ~= "zm_transit_dr" then
+					mapsValues[#mapsValues + 1] = map
+					mapsDisplays[#mapsDisplays + 1] = mapRef
+				end
 			end
+
 			break
 		end
 
-		rowForNum = rowForNum + 1
+		mapsRow = mapsRow + 1
 	end
 
 	self.mapButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("MENU_MAP_NAME_CAPS"), "ui_serverbrowser_searchfilter_map", Engine.Localize("SERVERBROWSER_MAP_HINT") )
 	CoD.GameOptions.Button_AddChoices( owner, self.mapButton, mapsDisplays, mapsValues )
+
+	local gametypesDisplays = {"CUSTOM_ALL"}
+	local gametypesValues = {""}
+
+	local gametypesRow = 0
+	while true do
+		local gametypesColVal = UIExpression.TableLookupGetColumnValueForRow(0, CoD.gametypesTable, gametypesRow, 0)
+
+		if gametypesColVal == "" then
+			break
+		end
+
+		if gametypesColVal == "0" then
+			local gametype = UIExpression.TableLookupGetColumnValueForRow(0, CoD.gametypesTable, gametypesRow, 1)
+			local gametypeRef = UIExpression.TableLookupGetColumnValueForRow(0, CoD.gametypesTable, gametypesRow, 2)
+
+			if gametype == "zclassic" then
+				gametypeRef = "MENU_DEFAULT_XENON_CAPS"
+			end
+
+			gametypesValues[#gametypesValues + 1] = gametype
+			gametypesDisplays[#gametypesDisplays + 1] = gametypeRef
+		end
+
+		gametypesRow = gametypesRow + 1
+	end
+
+	self.gametypeButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("MENU_GAME_MODE_CAPS"), "ui_serverbrowser_searchfilter_gamemode", Engine.Localize("SERVERBROWSER_GAMETYPE_HINT") )
+	CoD.GameOptions.Button_AddChoices( owner, self.gametypeButton, gametypesDisplays, gametypesValues )
 
 	self.defaultsButton = CoD.ButtonPrompt.new("alt1", Engine.Localize("PLATFORM_RESET_TO_DEFAULT"), self, "button_prompt_defaults", false, nil, nil, nil, "R", nil)
 	self:addRightButtonPrompt(self.defaultsButton)
