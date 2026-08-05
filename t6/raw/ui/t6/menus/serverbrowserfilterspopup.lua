@@ -1,9 +1,6 @@
 CoD.ServerBrowserFilters = {}
 
 CoD.ServerBrowserFilters.Back = function (self, event)
-	event.servers = {}
-	CoD.ServerList.ServerListRefresh(CoD.ServerList.ServerList, event)
-
 	self:saveState()
 	self:goBack(event.controller)
 end
@@ -68,6 +65,9 @@ LUI.createMenu.ServerBrowserFilters = function ( owner )
 	self.passwordProtectedButton = self.buttonList:addDvarLeftRightSelector( owner, UIExpression.ToUpper(0, Engine.Localize("EXE_SV_INFO_PASSWORD")), "ui_serverbrowser_searchfilter_passwordprotected", Engine.Localize("MENU_SERVER_BROWSER_PASSWORD_PROTECTED_HINT") )
 	CoD.GameOptions.Button_AddChoices( owner, self.passwordProtectedButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
 
+	self.modsButton = self.buttonList:addDvarLeftRightSelector( owner, Engine.Localize("MENU_MODS_CAPS"), "ui_serverbrowser_searchfilter_mods", Engine.Localize("MENU_SERVER_BROWSER_MODS_HINT") )
+	CoD.GameOptions.Button_AddChoices( owner, self.modsButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
+
 	if not CoD.isZombie then
 		self.hardcoreButton = self.buttonList:addDvarLeftRightSelector( owner, UIExpression.ToUpper(0, Engine.Localize("MENU_RULES_HARDCORE")), "ui_serverbrowser_searchfilter_hardcore", Engine.Localize("SERVERBROWSER_HARDCORE_HINT") )
 		CoD.GameOptions.Button_AddChoices( owner, self.hardcoreButton, { "MENU_NO_CAPS", "MENU_YES_CAPS", "CUSTOM_ALL" }, { 0, 1, 2 } )
@@ -106,7 +106,7 @@ LUI.createMenu.ServerBrowserFilters = function ( owner )
 						mapRef = UIExpression.ToUpper(nil, mapRef .. "_" .. map)
 					end
 
-					if string.find(Engine.Localize(mapRef), mapRef) then
+					if string.find(Engine.Localize(mapRef), mapRef, 1, true) then
 						mapRef = UIExpression.TableLookup(nil, CoD.gametypesTable, 0, 5, 2, map, 16)
 					end
 				end

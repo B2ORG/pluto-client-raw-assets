@@ -58,14 +58,14 @@ CoD.ServerList.ColumnSpacing = 5
 CoD.ServerList.NumElements = 18
 CoD.ServerList.TotalWidth = 860
 CoD.ServerList.Servers = {}
-CoD.ServerList.ServersStore = {}
+CoD.ServerList.StoredServers = {}
 CoD.ServerList.HoveredServer = nil
 CoD.ServerList.HoveredIndex = nil
 CoD.ServerList.SelectedServer = nil
 CoD.ServerList.SelectedIndex = nil
+CoD.ServerList.OpenedOnce = false
+CoD.ServerList.EnterPasswordKeyboardOpen = false
 CoD.ServerList.JoinTime = nil
-CoD.ServerList.OpenedOnce = nil
-CoD.ServerList.EnteringPassword = nil
 
 CoD.ServerList.UpdateButtonBorders = function(self)
 	local button = self.m_firstButton
@@ -94,50 +94,33 @@ CoD.ServerList.HoverServer = function (self, event)
 end
 
 CoD.ServerList.SelectServer = function (self, event)
-	if not CoD.ServerList.SelectedFromServerInfo then
-		if CoD.ServerList.SelectedServer == nil or self.server == nil or CoD.ServerList.SelectedServer.ip ~= self.server.ip or CoD.ServerList.SelectedServer.port ~= self.server.port then
-			CoD.ServerList.HoveredServer = nil
-			CoD.ServerList.HoveredIndex = nil
-			CoD.ServerList.SelectedServer = self.server
-			CoD.ServerList.SelectedIndex = self.index
-			CoD.ServerList.UpdateButtonBorders(self.parent)
-			return
-		end
-	end
-
-	if CoD.ServerList.SelectedServer ~= nil and CoD.ServerList.SelectedServer.has_password then
-		CoD.ServerList.EnteringPassword = true
-		Engine.Exec(0, "ui_keyboard_new " .. CoD.KEYBOARD_TYPE_TEXT_MESSAGE .. " \"" .. Engine.Localize("MPUI_ENTER_PASSWORD") .. "\" \"\" " .. 256)
-	else
-		CoD.ServerList.JoinServer(self, event)
-	end
-end
-
-CoD.ServerList.JoinServer = function (self, event)
-	if not CoD.ServerList.SelectedFromServerInfo then
-		if CoD.ServerList.SelectedServer == nil or self.server == nil or CoD.ServerList.SelectedServer.ip ~= self.server.ip or CoD.ServerList.SelectedServer.port ~= self.server.port then
-			return
-		end
-	end
-
-	if event.type == CoD.KEYBOARD_TYPE_TEXT_MESSAGE and not CoD.ServerList.EnteringPassword then
+	if CoD.ServerList.SelectedServer == nil or self.server == nil or CoD.ServerList.SelectedServer.ip ~= self.server.ip or CoD.ServerList.SelectedServer.port ~= self.server.port then
+		CoD.ServerList.HoveredServer = nil
+		CoD.ServerList.HoveredIndex = nil
+		CoD.ServerList.SelectedServer = self.server
+		CoD.ServerList.SelectedIndex = self.index
+		CoD.ServerList.UpdateButtonBorders(self.parent)
 		return
 	end
 
+	CoD.ServerList.InitJoinServer(self, event)
+end
+
+CoD.ServerList.InitJoinServer = function (self, event)
+	CoD.ServerList.EnterPasswordKeyboardOpen = false
+
+	CoD.ServerList.JoinServer(self, event)
+end
+
+CoD.ServerList.JoinServer = function (self, event)
 	if CoD.ServerList.SelectedServer == nil then
 		return
 	end
 
-	if CoD.ServerList.SelectedServer.has_password then
-		if event.type ~= CoD.KEYBOARD_TYPE_TEXT_MESSAGE then
-			return
-		end
-
-		CoD.ServerList.EnteringPassword = nil
-
-		if event.input ~= nil then
-			Engine.ExecNow(event.controller, "set password \"" .. event.input .. "\"\n")
-		end
+	if CoD.ServerList.SelectedServer.has_password and not CoD.ServerList.EnterPasswordKeyboardOpen then
+		CoD.ServerList.EnterPasswordKeyboardOpen = true
+		Engine.Exec(0, "ui_keyboard_new " .. CoD.KEYBOARD_TYPE_REGISTRATION_INPUT_PASSWORD .. " \"" .. Engine.Localize("MPUI_ENTER_PASSWORD") .. "\" " .. "n/a" .. " " .. 256 .. " " .. 1)
+		return
 	end
 
 	local now = UIExpression.milliseconds()
@@ -147,6 +130,26 @@ CoD.ServerList.JoinServer = function (self, event)
 		Engine.Exec(event.controller, "stopRefreshServers\n")
 		Engine.Exec(event.controller, "connect \"" .. CoD.ServerList.SelectedServer.ip .. ":" .. CoD.ServerList.SelectedServer.port .. "\"\n")
 	end
+end
+
+CoD.ServerList.EnterPasswordKeyboardInput = function (self, event)
+	if not CoD.ServerList.EnterPasswordKeyboardOpen then
+		return
+	end
+
+	if event.type ~= CoD.KEYBOARD_TYPE_REGISTRATION_INPUT_PASSWORD then
+		return
+	end
+
+	if CoD.ServerList.SelectedServer == nil or self.server == nil or CoD.ServerList.SelectedServer.ip ~= self.server.ip or CoD.ServerList.SelectedServer.port ~= self.server.port then
+		return
+	end
+
+	if event.input ~= nil then
+		Engine.ExecNow(event.controller, "set password \"" .. event.input .. "\"\n")
+	end
+
+	CoD.ServerList.JoinServer(self, event)
 end
 
 CoD.ServerList.ButtonPromptRefresh = function (self, event)
@@ -173,7 +176,7 @@ CoD.ServerList.SetDisplayables = function(server)
 
 			server.displayable_map = Engine.Localize(reference_map)
 
-			if string.find(server.displayable_map, reference_map) then
+			if string.find(server.displayable_map, reference_map, 1, true) then
 				server.displayable_map = server.map
 			end
 		else
@@ -184,7 +187,7 @@ CoD.ServerList.SetDisplayables = function(server)
 			else
 				server.displayable_gametype = Engine.Localize(reference_gametype)
 
-				if string.find(server.displayable_gametype, reference_gametype) then
+				if string.find(server.displayable_gametype, reference_gametype, 1, true) then
 					server.displayable_gametype = server.gametype
 				end
 			end
@@ -196,7 +199,7 @@ CoD.ServerList.SetDisplayables = function(server)
 			else
 				server.displayable_map = Engine.Localize(reference_map)
 
-				if string.find(server.displayable_map, reference_map) then
+				if string.find(server.displayable_map, reference_map, 1, true) then
 					server.displayable_map = server.location
 				end
 			end
@@ -210,7 +213,7 @@ CoD.ServerList.SetDisplayables = function(server)
 				else
 					server.displayable_map = Engine.Localize(reference_map)
 
-					if string.find(server.displayable_map, reference_map) then
+					if string.find(server.displayable_map, reference_map, 1, true) then
 						server.displayable_map = server.map
 					end
 				end
@@ -224,7 +227,7 @@ CoD.ServerList.SetDisplayables = function(server)
 		else
 			server.displayable_gametype = Engine.Localize(reference_gametype)
 
-			if string.find(server.displayable_gametype, reference_gametype) then
+			if string.find(server.displayable_gametype, reference_gametype, 1, true) then
 				server.displayable_gametype = server.gametype
 			end
 		end
@@ -236,7 +239,7 @@ CoD.ServerList.SetDisplayables = function(server)
 		else
 			server.displayable_map = Engine.Localize(reference_map)
 
-			if string.find(server.displayable_map, reference_map) then
+			if string.find(server.displayable_map, reference_map, 1, true) then
 				server.displayable_map = server.map
 			end
 		end
@@ -259,7 +262,7 @@ CoD.ServerList.FilterFunc = function(server)
 		local displayable_map = string.lower(server.displayable_map)
 		local displayable_gametype = string.lower(server.displayable_gametype)
 
-		if not string.find(hostname, searchFilter) and not string.find(displayable_map, searchFilter) and not string.find(displayable_gametype, searchFilter) then
+		if not string.find(hostname, searchFilter, 1, true) and not string.find(displayable_map, searchFilter, 1, true) and not string.find(displayable_gametype, searchFilter, 1, true) then
 			return false
 		end
 	end
@@ -287,6 +290,17 @@ CoD.ServerList.FilterFunc = function(server)
 		end
 	elseif passwordProtect == 1 then
 		if not server.has_password then
+			return false
+		end
+	end
+
+	local mods = UIExpression.DvarInt(0, "ui_serverbrowser_searchfilter_mods")
+	if mods == 0 then
+		if server.mod ~= "" then
+			return false
+		end
+	elseif mods == 1 then
+		if server.mod == "" then
 			return false
 		end
 	end
@@ -389,57 +403,47 @@ CoD.ServerList.SortFunc = function(server1, server2)
 end
 
 CoD.ServerList.FindHoveredIndex = function()
-	local foundServer = false
-
-	for index = 1, #CoD.ServerList.Servers, 1 do
-		if CoD.ServerList.HoveredServer ~= nil and CoD.ServerList.HoveredIndex ~= nil and CoD.ServerList.HoveredIndex > 1 then
+	if CoD.ServerList.HoveredServer ~= nil and CoD.ServerList.HoveredIndex ~= nil and CoD.ServerList.HoveredIndex > 1 then
+		for index = 1, #CoD.ServerList.Servers, 1 do
 			if CoD.ServerList.HoveredServer.ip == CoD.ServerList.Servers[index].ip and CoD.ServerList.HoveredServer.port == CoD.ServerList.Servers[index].port then
-				foundServer = true
 				CoD.ServerList.HoveredIndex = index
-				break
+				return
 			end
 		end
 	end
 
-	if not foundServer then
-		CoD.ServerList.HoveredServer = nil
-		CoD.ServerList.HoveredIndex = nil
-	end
+	CoD.ServerList.HoveredServer = nil
+	CoD.ServerList.HoveredIndex = nil
 end
 
 CoD.ServerList.FindSelectedIndex = function()
-	local foundServer = false
-
-	for index = 1, #CoD.ServerList.Servers, 1 do
-		if CoD.ServerList.SelectedServer ~= nil and CoD.ServerList.SelectedIndex ~= nil and CoD.ServerList.SelectedIndex > 1 then
+	if CoD.ServerList.SelectedServer ~= nil and CoD.ServerList.SelectedIndex ~= nil and (not Engine.LastInput_Gamepad() or CoD.ServerList.SelectedIndex > 1) then
+		for index = 1, #CoD.ServerList.Servers, 1 do
 			if CoD.ServerList.SelectedServer.ip == CoD.ServerList.Servers[index].ip and CoD.ServerList.SelectedServer.port == CoD.ServerList.Servers[index].port then
-				foundServer = true
 				CoD.ServerList.SelectedIndex = index
-				break
+				return
 			end
 		end
 	end
 
-	if not foundServer then
-		CoD.ServerList.SelectedServer = nil
-		CoD.ServerList.SelectedIndex = nil
-	end
+	CoD.ServerList.SelectedServer = nil
+	CoD.ServerList.SelectedIndex = nil
 end
 
 CoD.ServerList.ServerListRefresh = function(self, event)
 	if event.servers == nil then
-		CoD.ServerList.ServersStore = {}
+		CoD.ServerList.StoredServers = {}
 	else
 		local numServers = #event.servers
 
 		for index = 1, numServers, 1 do
 			local server = event.servers[index]
-			
-			local numServersStore = #CoD.ServerList.ServersStore
-			local foundIndex = numServersStore + 1
 
-			for indexStore = 1, numServersStore, 1 do
-				local storeServer = CoD.ServerList.ServersStore[indexStore]
+			local numStoredServers = #CoD.ServerList.StoredServers
+			local foundIndex = numStoredServers + 1
+
+			for indexStore = 1, numStoredServers, 1 do
+				local storeServer = CoD.ServerList.StoredServers[indexStore]
 
 				if storeServer.ip == server.ip and storeServer.port == server.port then
 					foundIndex = indexStore
@@ -449,15 +453,15 @@ CoD.ServerList.ServerListRefresh = function(self, event)
 
 			CoD.ServerList.SetDisplayables(server)
 
-			CoD.ServerList.ServersStore[foundIndex] = server
+			CoD.ServerList.StoredServers[foundIndex] = server
 		end
 	end
 
 	CoD.ServerList.Servers = {}
-	local numServers = #CoD.ServerList.ServersStore
+	local numServers = #CoD.ServerList.StoredServers
 
 	for index = 1, numServers, 1 do
-		local server = CoD.ServerList.ServersStore[index]
+		local server = CoD.ServerList.StoredServers[index]
 
 		local matchesFilter = CoD.ServerList.FilterFunc(server)
 
@@ -479,7 +483,9 @@ CoD.ServerList.ServerListRefresh = function(self, event)
 		index = CoD.ServerList.HoveredIndex
 	end
 
-	self:setTotalItems(#CoD.ServerList.Servers, index)
+	if not CoD.ServerBrowser.PopupOpen then
+		self:setTotalItems(#CoD.ServerList.Servers, index)
+	end
 end
 
 CoD.ServerList.CreateButtonMutables = function (LocalClientIndex, element, mutables)
@@ -497,7 +503,7 @@ CoD.ServerList.CreateButtonMutables = function (LocalClientIndex, element, mutab
 
 	element.serverListButton:registerEventHandler("button_over", CoD.ServerList.HoverServer)
 	element.serverListButton:registerEventHandler("button_action", CoD.ServerList.SelectServer)
-	element.serverListButton:registerEventHandler("ui_keyboard_input", CoD.ServerList.JoinServer)
+	element.serverListButton:registerEventHandler("ui_keyboard_input", CoD.ServerList.EnterPasswordKeyboardInput)
 	element:addElement(element.serverListButton)
 end
 
@@ -559,6 +565,7 @@ CoD.ServerList.ResetDvars = function ()
 	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_emptyservers 1\n")
 	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_fullservers 1\n")
 	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_passwordprotected 2\n")
+	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_mods 2\n")
 	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_aimassist 2\n")
 	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_hidebrainrot 0\n")
 	Engine.ExecNow(0, "set ui_serverbrowser_searchfilter_gamemode \"\"\n")
@@ -582,7 +589,7 @@ CoD.ServerList.new = function (defaultAnimationState, LocalClientIndex)
 	self:registerEventHandler("button_prompt_refresh", CoD.ServerList.ButtonPromptRefresh)
 	self:registerEventHandler("serverlist_jumpToTop", CoD.ServerList.JumpToTop)
 
-	if CoD.ServerList.OpenedOnce == nil then
+	if not CoD.ServerList.OpenedOnce then
 		CoD.ServerList.OpenedOnce = true
 
 		if UIExpression.DvarString(nil, "ui_serverbrowser_sortheader") == "" then
@@ -598,16 +605,12 @@ CoD.ServerList.new = function (defaultAnimationState, LocalClientIndex)
 		self:processEvent( {
 			name = "button_prompt_refresh"
 		} )
-
-		self:processEvent( {
-			name = "server_list_refresh"
-		} )
-	else
-		self:processEvent( {
-			name = "server_list_refresh",
-			servers = {}
-		} )
 	end
+
+	self:processEvent( {
+		name = "server_list_refresh",
+		servers = {}
+	} )
 
 	CoD.ServerList.ServerList = self
 
