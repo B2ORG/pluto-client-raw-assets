@@ -150,7 +150,7 @@ REFERENCE           MENU_SERVER_BROWSER_PASSWORD_PROTECTED_HINT
 LANG_ENGLISH       "サーバーリストにパスワードで保護されたサーバーを表示します。"
 
 REFERENCE           MENU_SERVER_BROWSER_MODS_HINT
-LANG_ENGLISH        ""
+LANG_ENGLISH        "MODサーバーをサーバーリストに表示します。"
 
 REFERENCE           MENU_SERVER_BROWSER_MAX_PING_HINT
 LANG_ENGLISH       "サーバーリストに表示するサーバーの最大Ping値。"
